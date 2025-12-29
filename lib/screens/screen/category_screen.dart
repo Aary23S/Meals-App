@@ -28,7 +28,8 @@ class CategoryScreen  extends StatelessWidget
     return GridView
       ( 
         padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 1.5, mainAxisSpacing: 15, crossAxisSpacing: 10),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount
+        (crossAxisCount: 2,childAspectRatio: 1.5, mainAxisSpacing: 15, crossAxisSpacing: 10),
         children: 
         [
           for(final category in availableCategories)

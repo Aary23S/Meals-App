@@ -102,6 +102,7 @@ class _TabScreenState extends State<TabScreen>
     var activePgTitile='Categories';
 
     Widget activePage = CategoryScreen(onToggleFav: _toogeleMealFavStatus, availableMeals: availableMeals,);
+    
     if(_selectedIndex==1){
       activePage=Meals( meals: _favouriteMeal, onToggleFav: _toogeleMealFavStatus,);
       activePgTitile='Your Favorites';
