@@ -1,13 +1,17 @@
-// ignore_for_file: avoid_unnecessary_containers, deprecated_member_use
+// ignore_for_file: avoid_unnecessary_containers, deprecated_member_use, unused_import
 
 import 'package:flutter/material.dart';
+import 'package:shpoing_app/screens/model/meals.dart';
 // import 'package:shpoing_app/screens/screen/meals.dart';
 import 'package:shpoing_app/screens/screen/tabs.dart';
 import 'package:shpoing_app/screens/widget/main_drawer.dart';
 
 class FiltersScreen extends StatefulWidget 
 {
-  const FiltersScreen({super.key});
+  const FiltersScreen({super.key, required this.currentFilters});
+
+  final Map<Filters,bool> currentFilters;
+
   @override
   State<FiltersScreen> createState() => _FiltersScreenState();
 }
@@ -28,6 +32,14 @@ class _FiltersScreenState extends State<FiltersScreen>
   var _lactoseFreeSet = false;
 
   @override
+  void initState() {
+    super.initState();
+    _glutenFreeSet = widget.currentFilters[Filters.glutenFree]!;
+    _vegetarianSet = widget.currentFilters[Filters.vegetarian]!;
+    _veganSet = widget.currentFilters[Filters.vegan]!;
+    _lactoseFreeSet = widget.currentFilters[Filters.lactoseFree]!;
+  }
+  @override
   Widget build(BuildContext context) 
   {
     return Scaffold
@@ -36,24 +48,29 @@ class _FiltersScreenState extends State<FiltersScreen>
       (
         title: const Text("Your Filters"),
       ),
-      drawer: MainDrawer(onSelectScreen: (identifier){
-        Navigator.of(context).pop();
-        if(identifier == 'meals'){
-          Navigator.of(context).pushReplacement(MaterialPageRoute
-          (builder: (ctx)=> TabScreen()));
-        } 
-      },),
-      body:WillPopScope
-      (
-        // canPop: true,
-        onWillPop: () async {
+      drawer: MainDrawer(
+        onSelectScreen: (identifier) {
+          Navigator.of(context).pop();
+          if (identifier == 'meals') {
+            Navigator.of(context).pop({
+              Filters.glutenFree: _glutenFreeSet,
+              Filters.vegetarian: _vegetarianSet,
+              Filters.vegan: _veganSet,
+              Filters.lactoseFree: _lactoseFreeSet,
+            });
+          }
+        },
+      ),
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
           Navigator.of(context).pop({
-            Filters.glutenFree : _glutenFreeSet,
-            Filters.vegetarian : _vegetarianSet, 
-            Filters.vegan : _veganSet,
-            Filters.lactoseFree : _lactoseFreeSet,
+            Filters.glutenFree: _glutenFreeSet,
+            Filters.vegetarian: _vegetarianSet,
+            Filters.vegan: _veganSet,
+            Filters.lactoseFree: _lactoseFreeSet,
           });
-          return false;
         },
         child: Container
         (

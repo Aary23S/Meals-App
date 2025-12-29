@@ -1,5 +1,6 @@
-// ignore_for_file: avoid_print, deprecated_member_use
+// ignore_for_file: avoid_print, deprecated_member_use, unused_local_variable, unused_field
 import 'package:flutter/material.dart';
+import 'package:shpoing_app/screens/data/dummy_data.dart';
 import 'package:shpoing_app/screens/model/meals.dart';
 import 'package:shpoing_app/screens/screen/category_screen.dart';
 import 'package:shpoing_app/screens/screen/filters.dart';
@@ -13,11 +14,19 @@ class TabScreen extends StatefulWidget
   State<TabScreen> createState() => _TabScreenState();
 }
 
+final kInitialFilters = {
+  Filters.glutenFree : false,
+  Filters.vegetarian : false, 
+  Filters.vegan : false,
+  Filters.lactoseFree : false,
+};
 class _TabScreenState extends State<TabScreen> 
 {
   int _selectedIndex=0;
   final List<Meal> _favouriteMeal = [];
   
+  Map<Filters,bool> _selectedFilter =kInitialFilters;
+
   //this function helps to first check which meal is already in fav list or not
   // then add or remove accordingly
   void _toogeleMealFavStatus(Meal meal)
@@ -54,19 +63,45 @@ class _TabScreenState extends State<TabScreen>
     if (identifier == 'filter') {
       final result = await Navigator.of(context).push<Map<Filters, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => const FiltersScreen(),
+          builder: (ctx) => FiltersScreen(currentFilters: _selectedFilter,),
         ),
       );      
-      print(result);
+      // print(result);
+
+      setState(() {
+        _selectedFilter=result ?? kInitialFilters;
+      });
     }
   }
 
+  
+  
+  
   @override
   Widget build(BuildContext context) 
   {
+    
+    final availableMeals=dummyMeals.where(
+    (meal) {
+      if(_selectedFilter[Filters.glutenFree]! && !meal.isGlutenFree){
+        return false;
+      }
+      if(_selectedFilter[Filters.vegetarian]! && !meal.isVegetarian){
+        return false;
+      }
+      if(_selectedFilter[Filters.vegan]! && !meal.isVegan){
+        return false;
+      }
+      if(_selectedFilter[Filters.lactoseFree]! && !meal.isLactoseFree){
+        return false;
+      }
+      return true;
+    }
+  ).toList();
+    
     var activePgTitile='Categories';
 
-    Widget activePage = CategoryScreen(onToggleFav: _toogeleMealFavStatus,);
+    Widget activePage = CategoryScreen(onToggleFav: _toogeleMealFavStatus, availableMeals: availableMeals,);
     if(_selectedIndex==1){
       activePage=Meals( meals: _favouriteMeal, onToggleFav: _toogeleMealFavStatus,);
       activePgTitile='Your Favorites';

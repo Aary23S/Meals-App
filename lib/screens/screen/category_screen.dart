@@ -10,17 +10,17 @@ import 'package:shpoing_app/screens/model/category.dart';
 
 class CategoryScreen  extends StatelessWidget 
 {
-  const CategoryScreen ({super.key, required this.onToggleFav});
+  const CategoryScreen ({super.key, required this.onToggleFav, required this.availableMeals});
 
   final void Function(Meal meal) onToggleFav;
+  final List<Meal> availableMeals;
 
   void _selectCategory(BuildContext context, Category category)
   {
-    final filteredMeals = dummyMeals.where((meal)=> meal.categories.contains(category.id)).toList();
+    final filteredMeals = availableMeals.where((meal)=> meal.categories.contains(category.id)).toList();
     Navigator.push(context, MaterialPageRoute(builder:(cxt) => 
     Meals(title: category.title, meals: filteredMeals, onToggleFav: onToggleFav,) ));
   }
-
 
   @override
   Widget build(BuildContext context) 
