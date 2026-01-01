@@ -38,7 +38,7 @@ class _TabScreenState extends ConsumerState<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final availableMeals = ref.watch(filteredMealsProvider);
+    final availableMeals = ref.watch(filterMealsProvider);
 
     var activePgTitile = 'Categories';
     Widget activePage = CategoryScreen(

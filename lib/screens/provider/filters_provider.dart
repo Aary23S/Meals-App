@@ -35,9 +35,30 @@ final filterProvider =
   return FilterNotifier();
 });
 
-final filteredMealsProvider = Provider((ref) {
-  final meals = ref.watch(mealsProvider);
+// final filteredMealsProvider = Provider((ref) {
+//   final meals = ref.watch(mealsProvider);
+//   final activeFilters = ref.watch(filterProvider);
+
+//   return meals.where((meal) {
+//     if (activeFilters[Filters.glutenFree]! && !meal.isGlutenFree) {
+//       return false;
+//     }
+//     if (activeFilters[Filters.vegetarian]! && !meal.isVegetarian) {
+//       return false;
+//     }
+//     if (activeFilters[Filters.vegan]! && !meal.isVegan) {
+//       return false;
+//     }
+//     if (activeFilters[Filters.lactoseFree]! && !meal.isLactoseFree) {
+//       return false;
+//     }
+//     return true;
+//   }).toList();
+// });
+
+final filterMealsProvider = Provider((ref){
   final activeFilters = ref.watch(filterProvider);
+  final meals = ref.watch(mealsProvider);
 
   return meals.where((meal) {
     if (activeFilters[Filters.glutenFree]! && !meal.isGlutenFree) {
