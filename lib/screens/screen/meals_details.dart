@@ -1,15 +1,18 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:shpoing_app/screens/model/meals.dart';
-
-class MealsDetails extends StatelessWidget 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shpoing_app/screens/provider/favourite_provider.dart';
+class MealsDetails extends ConsumerWidget 
 {
-  const MealsDetails({super.key, required this.meal, required this.onToggleFav});
+  const MealsDetails({super.key, required this.meal});
 
   final Meal meal;
-  final void Function(Meal meal) onToggleFav;
+  // final void Function(Meal meal) onToggleFav;
 
   @override
-  Widget build(BuildContext context) 
+  Widget build(BuildContext context, WidgetRef ref) 
   {
     return Scaffold
     (
@@ -19,7 +22,12 @@ class MealsDetails extends StatelessWidget
         actions: 
         [
           IconButton(onPressed: (){
-            onToggleFav(meal);
+            // onToggleFav(meal);
+            final isAddedtoFav=ref.read(favouriteMealsProvider.notifier).toggleFavourite(meal);
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(isAddedtoFav ? 'Meal added in Favourite' : 'Meal removed from Favourite'),),
+    );
           }, icon: Icon(Icons.star))
         ],
       ),

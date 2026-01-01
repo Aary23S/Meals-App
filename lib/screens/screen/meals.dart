@@ -7,16 +7,16 @@ import 'package:shpoing_app/screens/widget/meal_item.dart';
 
 class Meals extends StatelessWidget 
 {
-  const Meals({super.key, this.title, required this.meals, required this.onToggleFav});
+  const Meals({super.key, this.title, required this.meals});
 
   final String? title;
   final List<Meal> meals; 
-  final void Function(Meal meal) onToggleFav;
+  // final void Function(Meal meal) onToggleFav;
 
   void selectMeal(BuildContext context, Meal meal)
   {
     Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> 
-    MealsDetails(meal: meal, onToggleFav: onToggleFav,),),);
+    MealsDetails(meal: meal),),);
   }
   
   @override

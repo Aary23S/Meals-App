@@ -1,17 +1,18 @@
-// ignore_for_file: avoid_print, deprecated_member_use, unused_local_variable, unused_field
+// ignore_for_file: avoid_print, deprecated_member_use, unused_local_variable, unused_field, unused_element
 import 'package:flutter/material.dart';
 import 'package:shpoing_app/screens/data/dummy_data.dart';
-import 'package:shpoing_app/screens/model/meals.dart';
+// import 'package:shpoing_app/screens/model/meals.dart';
 import 'package:shpoing_app/screens/screen/category_screen.dart';
 import 'package:shpoing_app/screens/screen/filters.dart';
 import 'package:shpoing_app/screens/screen/meals.dart';
 import 'package:shpoing_app/screens/widget/main_drawer.dart';
-
-class TabScreen extends StatefulWidget 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shpoing_app/screens/provider/favourite_provider.dart';
+class TabScreen extends ConsumerStatefulWidget 
 {
   const TabScreen({super.key});
   @override
-  State<TabScreen> createState() => _TabScreenState();
+  ConsumerState<TabScreen> createState() => _TabScreenState();
 }
 
 final kInitialFilters = {
@@ -20,36 +21,15 @@ final kInitialFilters = {
   Filters.vegan : false,
   Filters.lactoseFree : false,
 };
-class _TabScreenState extends State<TabScreen> 
+class _TabScreenState extends ConsumerState<TabScreen> 
 {
   int _selectedIndex=0;
-  final List<Meal> _favouriteMeal = [];
+  // final List<Meal> _favouriteMeal = [];
   
   Map<Filters,bool> _selectedFilter =kInitialFilters;
-
-  //this function helps to first check which meal is already in fav list or not
-  // then add or remove accordingly
-  void _toogeleMealFavStatus(Meal meal)
-  {
-    final isExisting = _favouriteMeal.contains(meal);
-    setState((){
-      if(isExisting){
-        _favouriteMeal.remove(meal);
-        _showInfoMessage('Meal removed from favorites.');
-      } else {
-        _favouriteMeal.add(meal);
-        _showInfoMessage('Meal added to favorites.');
-      }
-    });
-  }
   
   //snackbar to show info message
-  void _showInfoMessage(String message){
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(message),),
-    );
-  }
+
 
   //set the screen based on the index selected in bottom navigation bar
   void _selectPage(int index){
@@ -101,10 +81,11 @@ class _TabScreenState extends State<TabScreen>
     
     var activePgTitile='Categories';
 
-    Widget activePage = CategoryScreen(onToggleFav: _toogeleMealFavStatus, availableMeals: availableMeals,);
+    Widget activePage = CategoryScreen( availableMeals: availableMeals,);
     
     if(_selectedIndex==1){
-      activePage=Meals( meals: _favouriteMeal, onToggleFav: _toogeleMealFavStatus,);
+      final favouriteMeal= ref.watch(favouriteMealsProvider); 
+      activePage=Meals( meals: favouriteMeal, );
       activePgTitile='Your Favorites';
     }
     
