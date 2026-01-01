@@ -15,7 +15,7 @@ class FavouriteProvider extends StateNotifier<List<Meal>> {
       return false;
     } else {
       state = [...state, meal];
-      return true;
+      return true;  
     }
   }
 

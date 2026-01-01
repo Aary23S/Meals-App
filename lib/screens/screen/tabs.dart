@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print, deprecated_member_use, unused_local_variable, unused_field, unused_element
 import 'package:flutter/material.dart';
-import 'package:shpoing_app/screens/data/dummy_data.dart';
+// import 'package:shpoing_app/screens/data/dummy_data.dart';
 // import 'package:shpoing_app/screens/model/meals.dart';
 import 'package:shpoing_app/screens/screen/category_screen.dart';
 import 'package:shpoing_app/screens/screen/filters.dart';
@@ -8,100 +8,61 @@ import 'package:shpoing_app/screens/screen/meals.dart';
 import 'package:shpoing_app/screens/widget/main_drawer.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shpoing_app/screens/provider/favourite_provider.dart';
-class TabScreen extends ConsumerStatefulWidget 
-{
+import 'package:shpoing_app/screens/provider/filters_provider.dart';
+
+class TabScreen extends ConsumerStatefulWidget {
   const TabScreen({super.key});
   @override
   ConsumerState<TabScreen> createState() => _TabScreenState();
 }
 
-final kInitialFilters = {
-  Filters.glutenFree : false,
-  Filters.vegetarian : false, 
-  Filters.vegan : false,
-  Filters.lactoseFree : false,
-};
-class _TabScreenState extends ConsumerState<TabScreen> 
-{
-  int _selectedIndex=0;
-  // final List<Meal> _favouriteMeal = [];
-  
-  Map<Filters,bool> _selectedFilter =kInitialFilters;
-  
-  //snackbar to show info message
+class _TabScreenState extends ConsumerState<TabScreen> {
+  int _selectedIndex = 0;
 
-
-  //set the screen based on the index selected in bottom navigation bar
-  void _selectPage(int index){
-    setState((){
-      _selectedIndex=index;
+  void _selectPage(int index) {
+    setState(() {
+      _selectedIndex = index;
     });
   }
 
-  void _setScreen(String identifier) async {
+  void _setScreen(String identifier) {
     Navigator.of(context).pop();
     if (identifier == 'filter') {
-      final result = await Navigator.of(context).push<Map<Filters, bool>>(
+      Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(currentFilters: _selectedFilter,),
+          builder: (ctx) => const FiltersScreen(),
         ),
-      );      
-      // print(result);
-
-      setState(() {
-        _selectedFilter=result ?? kInitialFilters;
-      });
+      );
     }
   }
 
-  
-  
-  
   @override
-  Widget build(BuildContext context) 
-  {
-    
-    final availableMeals=dummyMeals.where(
-    (meal) {
-      if(_selectedFilter[Filters.glutenFree]! && !meal.isGlutenFree){
-        return false;
-      }
-      if(_selectedFilter[Filters.vegetarian]! && !meal.isVegetarian){
-        return false;
-      }
-      if(_selectedFilter[Filters.vegan]! && !meal.isVegan){
-        return false;
-      }
-      if(_selectedFilter[Filters.lactoseFree]! && !meal.isLactoseFree){
-        return false;
-      }
-      return true;
-    }
-  ).toList();
-    
-    var activePgTitile='Categories';
+  Widget build(BuildContext context) {
+    final availableMeals = ref.watch(filteredMealsProvider);
 
-    Widget activePage = CategoryScreen( availableMeals: availableMeals,);
-    
-    if(_selectedIndex==1){
-      final favouriteMeal= ref.watch(favouriteMealsProvider); 
-      activePage=Meals( meals: favouriteMeal, );
-      activePgTitile='Your Favorites';
+    var activePgTitile = 'Categories';
+    Widget activePage = CategoryScreen(
+      availableMeals: availableMeals,
+    );
+
+    if (_selectedIndex == 1) {
+      final favouriteMeal = ref.watch(favouriteMealsProvider);
+      activePage = Meals(
+        meals: favouriteMeal,
+      );
+      activePgTitile = 'Your Favorites';
     }
-    
-    return Scaffold
-    (
+
+    return Scaffold(
       appBar: AppBar(
         title: Text(activePgTitile),
       ),
       drawer: MainDrawer(onSelectScreen: _setScreen),
       body: activePage,
-      bottomNavigationBar: BottomNavigationBar
-      (
+      bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
         currentIndex: _selectedIndex,
-        items: const 
-        [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.category),
             label: 'Categories',
